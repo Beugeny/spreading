@@ -55,8 +55,8 @@ namespace Src.utils
             Vector3 delta=Vector3.zero;
             if (screenPointMin.x > 0) delta.x = screenPointMin.x;
             if (screenPointMin.y > 0) delta.y = screenPointMin.y;
-            if (screenPointMax.x < 0) delta.x = screenPointMax.x;
-            if (screenPointMax.y < 0) delta.y = screenPointMax.y;
+            if (screenPointMax.x < Screen.width) delta.x = screenPointMax.x-Screen.width;
+            if (screenPointMax.y < Screen.height) delta.y = screenPointMax.y-Screen.height;
             _target.position -= delta;
         }
 

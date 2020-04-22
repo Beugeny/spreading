@@ -12,8 +12,8 @@ namespace Src.utils
 
         private void Start()
         {
-            _minScaleFactor = 0.2f;
-            _maxScaleFactor = 3f;
+            _minScaleFactor = 0.1f;
+            _maxScaleFactor = 10f;
 
             _rt = Target.GetComponent<RectTransform>();
         }
