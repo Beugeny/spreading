@@ -38,7 +38,7 @@ namespace Src
             _arenaUiComps.gameObject.SetActive(true);
             _arenaGo.gameObject.SetActive(true);
             _isStarted = true;
-            _props = new ArenaProperties(10000, _arenaGo, _personPrefab, 100f, 0.5f,50000,50000);
+            _props = new ArenaProperties(10000, _arenaGo, _personPrefab, 100f, 0.0f,50000,50000);
             _arena = new Arena(_props);
             _arena.InfectRandom(new InfectionProps(60));
             _arenaUi = new MainStatUi(_arenaUiComps, _arena.State, _arena);

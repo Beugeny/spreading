@@ -9,7 +9,7 @@ namespace Src
         {
             var parentRect = parent.rect;
             var personObject = Object.Instantiate(props.PersonPrefab, parent);
-            personObject.transform.localPosition = Utils.GetRandom2dPoint(parentRect);
+            // personObject.transform.localPosition = Utils.GetRandom2dPoint(parentRect);
             var p = new Person(personObject.GetComponent<PersonComponent>(),props,parentRect);
             return p;
         }

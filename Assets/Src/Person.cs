@@ -47,7 +47,7 @@ namespace Src
             if (!_state.MovingToTargetPoint)
             {
                 _state.MovingToTargetPoint = true;
-                _state.TargetPoint = Utils.GetRandom2dPoint(_bounds);
+                // _state.TargetPoint = Utils.GetRandom2dPoint(_bounds);
             }
 
             //move
