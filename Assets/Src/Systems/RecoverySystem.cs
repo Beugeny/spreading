@@ -1,14 +1,15 @@
 ﻿using Src.DataComponents;
 using Unity.Entities;
+using Unity.Jobs;
 
 namespace Src.Systems
 {
-    public class RecoverySystem : ComponentSystem
+    public class RecoverySystem : JobComponentSystem
     {
-        protected override void OnUpdate()
+        protected override JobHandle OnUpdate(JobHandle inputDeps)
         {
             var time = UnityEngine.Time.time;
-            Entities.ForEach((ref CreatureData data) =>
+            return Entities.ForEach((ref CreatureData data) =>
             {
                 if (data.IsInfected)
                 {
@@ -20,7 +21,7 @@ namespace Src.Systems
                         data.InfectedHasChanged = true;
                     }
                 }
-            });
+            }).Schedule(inputDeps);
         }
     }
 }
