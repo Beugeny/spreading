@@ -61,9 +61,10 @@ namespace Src
             _manager.SetComponentData(newCreature, new MovementData {Speed = 2500, TargetPoint = float2.zero});
             _manager.SetComponentData(newCreature, new CreatureData
             {
-                InfectedHasChanged = isInfected,
                 IsInfected = isInfected, InfectionTimestamp = isInfected ? Time.time : 0, InfectionDuration = 20
             });
+            
+            if(isInfected) _manager.AddComponent(newCreature, typeof(OnInfectionChangedEvent));
         }
 
         private void OnDestroy()

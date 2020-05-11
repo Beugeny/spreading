@@ -5,15 +5,17 @@ using UnityEngine;
 
 namespace Src.Systems
 {
-    // [UpdateBefore(typeof(BuildPhysicsWorld))]
+    [UpdateAfter(typeof(InfectionSystem))]
     public class CreatureMaterialSystem : ComponentSystem
     {
         private Material _recoveredMaterial;
         private Material _infectedMaterial;
         private Material _withoutImmunityMaterial;
 
-        public CreatureMaterialSystem()
+
+        protected override void OnCreate()
         {
+            base.OnCreate();
             _infectedMaterial = new Material(Shader.Find("Specular"));
             _infectedMaterial.color = Color.red;
             _infectedMaterial.enableInstancing = true;
@@ -27,30 +29,27 @@ namespace Src.Systems
             _withoutImmunityMaterial.enableInstancing = true;
         }
 
+
         protected override void OnUpdate()
         {
             Entities.ForEach(
-                (Entity entity, ref CreatureData data) =>
+                (Entity entity, ref CreatureData data, ref OnInfectionChangedEvent evt) =>
                 {
-                    if (data.InfectedHasChanged)
+                    var render = EntityManager.GetSharedComponentData<RenderMesh>(entity);
+                    if (data.IsInfected)
                     {
-                        var render = EntityManager.GetSharedComponentData<RenderMesh>(entity);
-                        data.InfectedHasChanged = false;
-                        if (data.IsInfected)
-                        {
-                            EntityManager.SetSharedComponentData(entity,
-                                new RenderMesh() {mesh = render.mesh, material = _infectedMaterial});
-                        }
-                        else if (data.HasImmunity)
-                        {
-                            EntityManager.SetSharedComponentData(entity,
-                                new RenderMesh() {mesh = render.mesh, material = _recoveredMaterial});
-                        }
-                        else
-                        {
-                            EntityManager.SetSharedComponentData(entity,
-                                new RenderMesh() {mesh = render.mesh, material = _withoutImmunityMaterial});
-                        }
+                        EntityManager.SetSharedComponentData(entity,
+                            new RenderMesh() {mesh = render.mesh, material = _infectedMaterial});
+                    }
+                    else if (data.HasImmunity)
+                    {
+                        EntityManager.SetSharedComponentData(entity,
+                            new RenderMesh() {mesh = render.mesh, material = _recoveredMaterial});
+                    }
+                    else
+                    {
+                        EntityManager.SetSharedComponentData(entity,
+                            new RenderMesh() {mesh = render.mesh, material = _withoutImmunityMaterial});
                     }
                 });
         }

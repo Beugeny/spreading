@@ -6,10 +6,20 @@ namespace Src.Systems
 {
     public class RecoverySystem : JobComponentSystem
     {
+        private EndSimulationEntityCommandBufferSystem _commandBuffer;
+
+        protected override void OnCreate()
+        {
+            base.OnCreate();
+            _commandBuffer = World.GetOrCreateSystem<EndSimulationEntityCommandBufferSystem>();
+        }
+
         protected override JobHandle OnUpdate(JobHandle inputDeps)
         {
             var time = UnityEngine.Time.time;
-            return Entities.ForEach((ref CreatureData data) =>
+            var entityCommandBuffer = _commandBuffer.CreateCommandBuffer();
+            var concurrentCommandBuffer = entityCommandBuffer.ToConcurrent();
+            return Entities.ForEach((Entity e, ref CreatureData data) =>
             {
                 if (data.IsInfected)
                 {
@@ -18,7 +28,7 @@ namespace Src.Systems
                     {
                         data.HasImmunity = true;
                         data.IsInfected = false;
-                        data.InfectedHasChanged = true;
+                        concurrentCommandBuffer.AddComponent(0, e, typeof(OnInfectionChangedEvent));
                     }
                 }
             }).Schedule(inputDeps);

@@ -1,11 +1,8 @@
-﻿using System;
-using Src.DataComponents;
+﻿using Src.DataComponents;
 using Unity.Entities;
 using Unity.Jobs;
 using Unity.Physics;
 using Unity.Physics.Systems;
-using UnityEngine;
-using UnityEngine.EventSystems;
 
 namespace Src.Systems
 {
@@ -28,10 +25,11 @@ namespace Src.Systems
         {
             var currentTime = UnityEngine.Time.time;
             var entityCommandBuffer = _commandBuffer.CreateCommandBuffer();
-            var concurrentCommandBuffer=entityCommandBuffer.ToConcurrent();
-            var eventArchetype = EntityManager.CreateArchetype(typeof(EventComponent));
-            var triggerJob = new TriggerJob(GetComponentDataFromEntity<CreatureData>(),currentTime,concurrentCommandBuffer,eventArchetype);
-            var jh= triggerJob.Schedule(_stepPhysicsWorld.Simulation, ref _buildPhysicsWorld.PhysicsWorld, inputDeps);
+            var concurrentCommandBuffer = entityCommandBuffer.ToConcurrent();
+            var triggerJob = new TriggerJob(GetComponentDataFromEntity<CreatureData>(), currentTime,
+                concurrentCommandBuffer);
+            var jh = triggerJob.Schedule(_stepPhysicsWorld.Simulation, ref _buildPhysicsWorld.PhysicsWorld, inputDeps);
+            jh.Complete();
             _commandBuffer.AddJobHandleForProducer(jh);
             return jh;
         }
@@ -41,13 +39,11 @@ namespace Src.Systems
             private ComponentDataFromEntity<CreatureData> _creatures;
             private readonly float _currentTime;
             private EntityCommandBuffer.Concurrent _concurrentCommandBuffer;
-            private readonly EntityArchetype _eventArchetype;
 
 
             public TriggerJob(ComponentDataFromEntity<CreatureData> creatures, float currentTime,
-                EntityCommandBuffer.Concurrent concurrentCommandBuffer, EntityArchetype eventArchetype)
+                EntityCommandBuffer.Concurrent concurrentCommandBuffer)
             {
-                _eventArchetype = eventArchetype;
                 _concurrentCommandBuffer = concurrentCommandBuffer;
                 _currentTime = currentTime;
                 _creatures = creatures;
@@ -55,7 +51,6 @@ namespace Src.Systems
 
             public void Execute(TriggerEvent triggerEvent)
             {
-               
                 var a = triggerEvent.Entities.EntityA;
                 var b = triggerEvent.Entities.EntityB;
                 if (_creatures.HasComponent(a) && _creatures.HasComponent(b))
@@ -67,19 +62,18 @@ namespace Src.Systems
                         if (!creatureA.IsInfected && !creatureA.HasImmunity)
                         {
                             creatureA.IsInfected = true;
-                            creatureA.InfectedHasChanged = true;
                             creatureA.InfectionTimestamp = _currentTime;
                             _creatures[a] = creatureA;
-                            _concurrentCommandBuffer.CreateEntity(a.Index,_eventArchetype);
+                            _concurrentCommandBuffer.AddComponent(0, a, typeof(OnInfectionChangedEvent));
                         }
 
                         if (!creatureB.IsInfected && !creatureB.HasImmunity)
                         {
                             creatureB.IsInfected = true;
-                            creatureB.InfectedHasChanged = true;
                             creatureB.InfectionTimestamp = _currentTime;
                             _creatures[b] = creatureB;
-                            _concurrentCommandBuffer.CreateEntity(b.Index,_eventArchetype);
+                            _concurrentCommandBuffer.AddComponent(0, b, typeof(OnInfectionChangedEvent));
+                            // _concurrentCommandBuffer.CreateEntity(b.Index,_eventArchetype);
                         }
                     }
                 }

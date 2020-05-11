@@ -9,6 +9,5 @@ namespace Src.DataComponents
         public bool HasImmunity;
         public float InfectionTimestamp;
         public int InfectionDuration;
-        public bool InfectedHasChanged;
     }
 }
