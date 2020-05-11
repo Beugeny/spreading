@@ -39,7 +39,7 @@ namespace Src
         {
             for (int i = 0; i < CreatureCount; i++)
             {
-                SpawnCreature(i == 0);
+                SpawnCreature(i %10== 0);
             }
         }
 

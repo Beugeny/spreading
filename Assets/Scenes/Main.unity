@@ -649,6 +649,7 @@ GameObject:
   - component: {fileID: 712366512}
   - component: {fileID: 712366513}
   - component: {fileID: 712366514}
+  - component: {fileID: 712366515}
   m_Layer: 0
   m_Name: Launcher
   m_TagString: Untagged
@@ -698,6 +699,18 @@ MonoBehaviour:
     type: 3}
   Plane: {fileID: 1331278362}
   CreatureCount: 50000
+--- !u!114 &712366515
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 712366511}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2a050bfce95245e5ae43a85bd41a1241, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &737459461
 GameObject:
   m_ObjectHideFlags: 0
